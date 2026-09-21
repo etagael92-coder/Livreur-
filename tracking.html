@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suivi de colis | OBTS</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .tracking-section { min-height: 70vh; padding: 60px 0; background: var(--background); }
+    .tracking-card { max-width: 620px; margin: auto; padding: 32px; background: white; border: 1px solid var(--border); border-radius: 20px; }
+    .tracking-card h1 { color: var(--obts-dark); margin: 10px 0; }
+    .tracking-card p { color: var(--muted); }
+    .tracking-form { display: flex; gap: 10px; margin-top: 24px; }
+    .tracking-form input { flex: 1; min-width: 0; padding: 13px; border: 1px solid var(--border); border-radius: 10px; font: inherit; }
+    .tracking-result { display: none; margin-top: 24px; padding: 20px; background: var(--background); border-radius: 12px; }
+    .tracking-result h2 { color: var(--obts-dark); font-size: 1.2rem; margin-bottom: 12px; }
+    .tracking-result p { margin: 7px 0; }
+    .tracking-error { color: #B42318; margin-top: 16px; }
+    @media (max-width: 560px) { .tracking-form { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo OBTS"></a>
+      <nav class="nav-menu">
+        <a href="index.html">Accueil</a>
+        <a href="client.html">Commander</a>
+        <a href="admin.html">Administration</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tracking-section">
+    <div class="container">
+      <section class="tracking-card">
+        <span class="section-label">SUIVI OBTS</span>
+        <h1>Suivez votre colis</h1>
+        <p>Saisissez votre code de suivi, par exemple : <strong>#OBTS-1234</strong>.</p>
+
+        <form class="tracking-form" id="tracking-form">
+          <input id="tracking-code" required placeholder="#OBTS-1234" aria-label="Code de suivi">
+          <button class="btn btn-primary" type="submit">Rechercher</button>
+        </form>
+
+        <div id="tracking-error" class="tracking-error"></div>
+
+        <div id="tracking-result" class="tracking-result">
+          <h2>Informations de livraison</h2>
+          <p><strong>Code :</strong> <span id="result-code"></span></p>
+          <p><strong>Destinataire :</strong> <span id="result-customer"></span></p>
+          <p><strong>Zone :</strong> <span id="result-zone"></span></p>
+          <p><strong>Statut :</strong> <span id="result-status"></span></p>
+          <p><strong>Livreur :</strong> <span id="result-courier"></span></p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-bottom">
+      <p>© <span id="current-year"></span> OBTS Congo. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "obts_demo_packages_v1";
+    const form = document.getElementById("tracking-form");
+    const result = document.getElementById("tracking-result");
+    const error = document.getElementById("tracking-error");
+
+    function safe(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[character]));
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      error.textContent = "";
+      result.style.display = "none";
+
+      const code = document.getElementById("tracking-code").value.trim().toLowerCase();
+      const packages = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const item = packages.find(packageItem =>
+        String(packageItem.trackingCode).toLowerCase() === code
+      );
+
+      if (!item) {
+        error.textContent = "Aucun colis trouvé avec ce code de suivi.";
+        return;
+      }
+
+      document.getElementById("result-code").textContent = item.trackingCode;
+      document.getElementById("result-customer").textContent = item.customer;
+      document.getElementById("result-zone").textContent = item.zone;
+      document.getElementById("result-status").textContent = item.status;
+      document.getElementById("result-courier").textContent = item.courier || "Non encore assigné";
+      result.style.display = "block";
+    });
+
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

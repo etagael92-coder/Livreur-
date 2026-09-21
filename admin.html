@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration | OBTS</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-section { padding: 48px 0; background: var(--background); min-height: 75vh; }
+    .admin-card { background: var(--white); border: 1px solid var(--border); border-radius: 18px; padding: 26px; margin-bottom: 24px; }
+    .admin-card h1, .admin-card h2 { color: var(--obts-dark); margin-bottom: 18px; }
+    .login-box { max-width: 420px; margin: 40px auto; }
+    .admin-input { width: 100%; padding: 13px; border: 1px solid var(--border); border-radius: 10px; margin: 8px 0 14px; font: inherit; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kpi { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+    .kpi span { color: var(--muted); font-size: .8rem; }
+    .kpi strong { display: block; color: var(--obts-dark); font-size: 1.8rem; margin-top: 6px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+    .toolbar input, .toolbar select { padding: 11px; border: 1px solid var(--border); border-radius: 9px; font: inherit; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 850px; }
+    th, td { padding: 13px 10px; border-bottom: 1px solid var(--border); text-align: left; font-size: .82rem; }
+    th { color: var(--obts-dark); background: var(--background); }
+    td { color: var(--muted); }
+    td select, td input { max-width: 150px; padding: 7px; border: 1px solid var(--border); border-radius: 7px; }
+    .status { display: inline-block; padding: 5px 9px; border-radius: 20px; background: var(--background); color: var(--obts-dark); font-size: .75rem; font-weight: 700; }
+    .hidden { display: none !important; }
+    .error { color: #B42318; font-size: .85rem; margin-bottom: 12px; }
+    @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .kpi { padding: 14px; } .kpi strong { font-size: 1.4rem; } .admin-card { padding: 18px; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav-container">
+      <a href="index.html" class="logo"><img src="images/logo.png" alt="Logo OBTS"></a>
+      <nav class="nav-menu">
+        <a href="index.html">Accueil</a>
+        <a href="client.html">Commander</a>
+        <a href="admin.html">Administration</a>
+      </nav>
+      <a href="tel:+242040369595" class="btn btn-primary">Appeler</a>
+    </div>
+  </header>
+
+  <main class="admin-section">
+    <div class="container">
+
+      <section id="login-panel" class="admin-card login-box">
+        <span class="section-label">ESPACE SÉCURISÉ</span>
+        <h1>Connexion administrateur</h1>
+        <p>Mot de passe de démonstration : <strong>OBTS2026</strong></p>
+        <label for="password">Mot de passe</label>
+        <input class="admin-input" id="password" type="password" placeholder="Votre mot de passe">
+        <div id="login-error" class="error"></div>
+        <button class="btn btn-primary" id="login-button">Se connecter</button>
+      </section>
+
+      <section id="dashboard" class="hidden">
+        <div class="admin-card">
+          <span class="section-label">TABLEAU DE BORD</span>
+          <h1>Administration OBTS</h1>
+          <p>Gérez les demandes de livraison enregistrées sur cet appareil.</p>
+          <button class="btn btn-secondary" id="logout-button">Se déconnecter</button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><span>Total des colis</span><strong id="total-count">0</strong></div>
+          <div class="kpi"><span>En cours</span><strong id="progress-count">0</strong></div>
+          <div class="kpi"><span>Livrés aujourd'hui</span><strong id="delivered-count">0</strong></div>
+          <div class="kpi"><span>À encaisser</span><strong id="cash-count">0 FCFA</strong></div>
+        </div>
+
+        <div class="admin-card">
+          <h2>Demandes de livraison</h2>
+          <div class="toolbar">
+            <input id="search" type="search" placeholder="Rechercher un colis...">
+            <select id="status-filter">
+              <option value="">Tous les statuts</option>
+              <option>En attente</option>
+              <option>En collecte</option>
+              <option>En route</option>
+              <option>Livré</option>
+              <option>Annulé</option>
+            </select>
+            <button class="btn btn-primary" id="export-button">Exporter CSV</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Suivi</th>
+                  <th>Destinataire</th>
+                  <th>Zone</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                  <th>Livreur</th>
+                  <th>Encaissement</th>
+                </tr>
+              </thead>
+              <tbody id="packages-body"></tbody>
+            </table>
+          </div>
+          <p id="empty-message" class="hidden">Aucune demande trouvée.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <div>
+        <img src="images/logo.png" alt="Logo OBTS" class="footer-logo">
+        <p>OBTS un jour, OBTS pour toujours.</p>
+      </div>
+      <div>
+        <h3>Navigation</h3>
+        <a href="index.html">Accueil</a>
+        <a href="client.html">Commander</a>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <p>+242 04 036 95 95</p>
+        <p>infos@obts-congo.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© <span id="current-year"></span> OBTS Congo. Tous droits réservés.</p></div>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "obts_demo_packages_v1";
+    const ADMIN_PASSWORD = "OBTS2026";
+    let packages = [];
+
+    const loginPanel = document.getElementById("login-panel");
+    const dashboard = document.getElementById("dashboard");
+    const loginError = document.getElementById("login-error");
+
+    document.getElementById("login-button").addEventListener("click", () => {
+      const password = document.getElementById("password").value;
+      if (password === ADMIN_PASSWORD) {
+        loginPanel.classList.add("hidden");
+        dashboard.classList.remove("hidden");
+        loadDashboard();
+      } else {
+        loginError.textContent = "Mot de passe incorrect.";
+      }
+    });
+
+    document.getElementById("password").addEventListener("keydown", event => {
+      if (event.key === "Enter") document.getElementById("login-button").click();
+    });
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      dashboard.classList.add("hidden");
+      loginPanel.classList.remove("hidden");
+      document.getElementById("password").value = "";
+    });
+
+    function loadDashboard() {
+      packages = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      updateKPIs();
+      renderPackages();
+    }
+
+    function updateKPIs() {
+      const today = new Date().toISOString().slice(0, 10);
+      const inProgress = packages.filter(p => ["En attente", "En collecte", "En route"].includes(p.status)).length;
+      const deliveredToday = packages.filter(p => p.status === "Livré" && p.createdAt.slice(0, 10) === today).length;
+      const cash = packages.filter(p => !p.paymentCollected && p.status !== "Annulé").reduce((sum, p) => sum + Number(p.amount || 0), 0);
+
+      document.getElementById("total-count").textContent = packages.length;
+      document.getElementById("progress-count").textContent = inProgress;
+      document.getElementById("delivered-count").textContent = deliveredToday;
+      document.getElementById("cash-count").textContent = cash.toLocaleString("fr-FR") + " FCFA";
+    }
+
+    function renderPackages() {
+      const body = document.getElementById("packages-body");
+      const search = document.getElementById("search").value.toLowerCase();
+      const filter = document.getElementById("status-filter").value;
+
+      body.innerHTML = "";
+
+      const filtered = packages.filter(p => {
+        const matchesSearch = [p.trackingCode, p.customer, p.phone, p.zone].join(" ").toLowerCase().includes(search);
+        const matchesStatus = !filter || p.status === filter;
+        return matchesSearch && matchesStatus;
+      });
+
+      document.getElementById("empty-message").classList.toggle("hidden", filtered.length !== 0);
+
+      filtered.forEach(p => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${escapeHTML(p.trackingCode)}</strong></td>
+          <td>${escapeHTML(p.customer)}<br>${escapeHTML(p.phone)}</td>
+          <td>${escapeHTML(p.zone)}</td>
+          <td>${Number(p.amount || 0).toLocaleString("fr-FR")} FCFA</td>
+          <td>
+            <select data-id="${p.id}" data-field="status">
+              ${["En attente", "En collecte", "En route", "Livré", "Annulé"].map(s => `<option ${p.status === s ? "selected" : ""}>${s}</option>`).join("")}
+            </select>
+          </td>
+          <td><input data-id="${p.id}" data-field="courier" value="${escapeHTML(p.courier || "")}" placeholder="Nom"></td>
+          <td><label><input type="checkbox" data-id="${p.id}" data-field="paymentCollected" ${p.paymentCollected ? "checked" : ""}> Payé</label></td>
+        `;
+        body.appendChild(row);
+      });
+
+      body.querySelectorAll("[data-field]").forEach(control => {
+        control.addEventListener("change", () => {
+          const id = Number(control.dataset.id);
+          const item = packages.find(p => p.id === id);
+          if (!item) return;
+
+          if (control.dataset.field === "paymentCollected") item.paymentCollected = control.checked;
+          else item[control.dataset.field] = control.value;
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(packages));
+          updateKPIs();
+        });
+      });
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+      }[char]));
+    }
+
+    document.getElementById("search").addEventListener("input", renderPackages);
+    document.getElementById("status-filter").addEventListener("change", renderPackages);
+
+    document.getElementById("export-button").addEventListener("click", () => {
+      const headers = ["Suivi", "Client", "Destinataire", "Téléphone", "Zone", "Adresse", "Montant", "Type", "Statut", "Livreur", "Paiement", "Date"];
+      const rows = packages.map(p => [
+        p.trackingCode, p.sender, p.customer, p.phone, p.zone, p.address,
+        p.amount, p.packageType, p.status, p.courier,
+        p.paymentCollected ? "Oui" : "Non", p.createdAt
+      ]);
+
+      const csv = [headers, ...rows].map(row => row.map(value => '"' + String(value ?? "").replace(/"/g, '""') + '"').join(";")).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "obts-livraisons.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
