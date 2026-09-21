@@ -1,167 +1,100 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="OBTS - Service de livraison rapide, sécurisé et fiable à Pointe-Noire.">
-  <title>OBTS | Livraison à Pointe-Noire</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBTS - Livraison Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',sans-serif} #map{height:55vh}.obts-blue{background:#0A9BDF}</style>
 </head>
-<body>
-  <header class="header">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="images/logo.png" alt="Logo OBTS">
-      </a>
-      <nav class="nav-menu">
-        <a href="index.html">Accueil</a>
-        <a href="client.html">Commander</a>
-        <a href="admin.html">Administration</a>
-      </nav>
-      <a href="client.html" class="btn btn-primary">Livrer un colis</a>
+<body class="bg-[#F5F5F5]">
+
+<!-- APP CONTAINER -->
+<div class="max-w-[420px] mx-auto bg-white min-h-screen shadow-2xl relative overflow-hidden">
+
+  <!-- HEADER -->
+  <div class="p-5 flex justify-between items-center">
+    <h1 class="text-3xl font-extrabold text-[#0A9BDF]">OBTS <span class="text-black">🚚</span></h1>
+    <div class="w-10 h-10 rounded-full bg-[#0A9BDF] flex items-center justify-center text-white font-bold">A</div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="px-5">
+    <div class="flex gap-2 bg-white border-2 border-gray-100 rounded-2xl p-2 shadow-sm">
+      <input id="trackInput" placeholder="Numéro de suivi OBTS" class="flex-1 px-3 outline-none font-semibold" value="OBTS-44219873">
+      <button onclick="track()" class="obts-blue w-12 h-12 rounded-xl text-white text-xl">→</button>
     </div>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="container hero-content">
-        <div class="hero-text">
-          <span class="badge">SERVICE DE LIVRAISON À POINTE-NOIRE</span>
-          <h1>Votre livraison, <span>simple et rapide.</span></h1>
-          <p>OBTS vous accompagne pour livrer vos colis et commandes en toute sécurité à Pointe-Noire.</p>
-          <div class="hero-buttons">
-            <a href="client.html" class="btn btn-primary">Commander une livraison</a>
-            <a href="#services" class="btn btn-secondary">Découvrir nos services</a>
-          </div>
-          <div class="trust-items">
-            <div><strong>Rapide</strong><span>Livraisons efficaces</span></div>
-            <div><strong>Sécurité</strong><span>Colis pris en charge</span></div>
-            <div><strong>Fiable</strong><span>Service de confiance</span></div>
-          </div>
-        </div>
-        <div class="hero-image">
-          <img src="images/livreur1.jpg" alt="Livreur OBTS à moto">
-        </div>
-      </div>
-    </section>
-
-    <section id="services" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <span class="section-label">NOS SERVICES</span>
-          <h2>La livraison adaptée à vos besoins</h2>
-          <p>Que vous soyez particulier, commerçant ou entreprise, OBTS facilite vos livraisons.</p>
-        </div>
-        <div class="services-grid">
-          <article class="service-card">
-            <div class="service-icon">📦</div>
-            <h3>Livraison de colis</h3>
-            <p>Envoyez vos colis à vos clients ou à vos proches dans les quartiers de Pointe-Noire.</p>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">🛍️</div>
-            <h3>Livraison e-commerce</h3>
-            <p>Confiez-nous la livraison de vos commandes issues de votre boutique en ligne.</p>
-          </article>
-          <article class="service-card">
-            <div class="service-icon">🏍️</div>
-            <h3>Livraison à moto</h3>
-            <p>Un service pratique pour assurer des livraisons rapides et adaptées à la ville.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section promotional-section">
-      <div class="container promotional-grid">
-        <div class="promotional-image">
-          <img src="images/publicite1.jpg" alt="Vendez en ligne avec OBTS">
-        </div>
-        <div class="promotional-content">
-          <span class="section-label">POUR LES COMMERÇANTS</span>
-          <h2>Vendez en ligne, nous livrons pour vous.</h2>
-          <p>Développez votre activité et proposez à vos clients un service de livraison fiable.</p>
-          <a href="client.html" class="btn btn-primary">Organiser une livraison</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section commitment-section">
-      <div class="container commitment-grid">
-        <div class="commitment-content">
-          <span class="section-label">NOTRE ENGAGEMENT</span>
-          <h2>OBTS un jour, OBTS pour toujours.</h2>
-          <p>Nous mettons la rapidité, la sécurité et la fiabilité au cœur de chaque livraison.</p>
-          <a href="client.html" class="btn btn-primary">Commencer maintenant</a>
-        </div>
-        <div class="commitment-image">
-          <img src="images/livreur2.jpg" alt="Service de livraison OBTS">
-        </div>
-      </div>
-    </section>
-
-    <section class="section zones-section">
-      <div class="container">
-        <div class="section-heading">
-          <span class="section-label">ZONE DE SERVICE</span>
-          <h2>Nous livrons à Pointe-Noire</h2>
-          <p>Notre service couvre notamment les zones suivantes :</p>
-        </div>
-        <div class="zones-list">
-          <span>Mpita</span>
-          <span>Ngoyo</span>
-          <span>Tchivoundoulou</span>
-          <span>Centre-ville</span>
-          <span>Tié-Tié</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-section">
-      <div class="container contact-content">
-        <div>
-          <span class="section-label">CONTACTEZ-NOUS</span>
-          <h2>Besoin d'une livraison ?</h2>
-          <p>Notre équipe est disponible pour répondre à vos besoins.</p>
-        </div>
-        <div class="contact-details">
-          <p><strong>Téléphone :</strong> +242 04 036 95 95</p>
-          <p><strong>Email :</strong> infos@obts-congo.com</p>
-          <p><strong>Adresse :</strong> Arrêt Tchivoundoulou, Ngoyo - Pointe-Noire</p>
-        </div>
-        <div class="contact-actions">
-          <a href="tel:+242040369595" class="btn btn-primary">Appeler OBTS</a>
-          <a href="https://wa.me/242040369595" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">WhatsApp</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-content">
-      <div>
-        <img src="images/logo.png" alt="Logo OBTS" class="footer-logo">
-        <p>OBTS un jour, OBTS pour toujours.</p>
-      </div>
-      <div>
-        <h3>Navigation</h3>
-        <a href="index.html">Accueil</a>
-        <a href="client.html">Commander</a>
-        <a href="admin.html">Administration</a>
-      </div>
-      <div>
-        <h3>Contact</h3>
-        <p>+242 04 036 95 95</p>
-        <p>infos@obts-congo.com</p>
-      </div>
+    <div class="grid grid-cols-3 gap-3 mt-5 text-center">
+      <div class="bg-[#F5F5F5] p-3 rounded-2xl"><div class="text-2xl">📦</div><p class="text-xs font-bold mt-1">Mes envois</p></div>
+      <div class="bg-[#0A9BDF] p-3 rounded-2xl text-white"><div class="text-2xl">+</div><p class="text-xs font-bold mt-1">Nouveau colis</p></div>
+      <div class="bg-[#F5F5F5] p-3 rounded-2xl"><div class="text-2xl">🧾</div><p class="text-xs font-bold mt-1">Tarifs</p></div>
     </div>
-    <div class="footer-bottom">
-      <p>© <span id="current-year"></span> OBTS Congo. Tous droits réservés.</p>
-    </div>
-  </footer>
+  </div>
 
-  <script>
-    document.getElementById("current-year").textContent = new Date().getFullYear();
-  </script>
+  <!-- LIVRAISON EN COURS -->
+  <div class="px-5 mt-6">
+    <div class="flex justify-between"><h2 class="font-extrabold text-lg">Livraison en cours</h2><span class="text-[#0A9BDF] font-bold text-sm">Voir tout</span></div>
+    <div id="colisCard" class="mt-3 border rounded-2xl p-4 bg-white">
+      <p class="font-bold">Colis standard • <span id="codeDisplay">#OBTS-44219873</span></p>
+      <p class="text-sm mt-2 font-semibold">📍 Pointe-Noire → Mpita, Ngoyo</p>
+      <p class="text-xs text-gray-500">Départ centre de tri Ngoyo • Prévu aujourd'hui</p>
+      <p class="mt-3 text-xs font-bold px-3 py-1 bg-blue-50 text-[#0A9BDF] inline-block rounded-full" id="statusBadge">En cours d'acheminement</p>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="px-5 mt-6">
+    <h3 class="font-extrabold">Suivi du colis</h3>
+    <div class="mt-4 border-l-2 border-[#0A9BDF] ml-2 pl-6 space-y-6">
+      <div><p class="font-bold">En cours d'acheminement</p><p class="text-xs text-gray-500">Aujourd'hui, 09:12 • En transit vers Ngoyo</p></div>
+      <div><p class="font-bold">Arrivé au centre de tri Ngoyo</p><p class="text-xs text-gray-500">Aujourd'hui, 07:45</p></div>
+      <div><p class="font-bold">Pris en charge à Mpita</p><p class="text-xs text-gray-500">Aujourd'hui, 06:30</p></div>
+    </div>
+    <button onclick="document.getElementById('mapSection').scrollIntoView({behavior:'smooth'})" class="w-full mt-6 obts-blue text-white font-extrabold py-4 rounded-2xl">Suivi en direct</button>
+  </div>
+
+  <!-- VRAIE CARTE -->
+  <div id="mapSection" class="mt-6">
+    <h3 class="px-5 font-extrabold text-lg mb-2">Suivi en direct</h3>
+    <div id="map"></div>
+    <div class="p-5 bg-white rounded-t-3xl -mt-6 relative z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+      <h4 class="font-extrabold">Informations sur la livraison</h4>
+      <div class="flex justify-between mt-3 text-sm"><span>Type <b>Express</b></span><span>Poids <b>1,80 kg</b></span></div>
+      <div class="flex items-center gap-3 mt-4">
+        <img src="https://i.pravatar.cc/100?img=12" class="w-12 h-12 rounded-full">
+        <div><p class="font-bold text-sm">Votre livreur OBTS</p><p class="font-extrabold">Aboubacar Diallo • 4,8★</p></div>
+        <a href="tel:+242040369595" class="ml-auto bg-orange-400 w-10 h-10 flex items-center justify-center rounded-full text-white">📞</a>
+      </div>
+      <div class="mt-4 bg-[#F5F5F5] p-3 rounded-xl text-sm font-bold">⏱ Estimation • Aujourd'hui avant 18h00</div>
+      <p class="text-center text-xs text-gray-400 mt-4">Arrêt Tchivoundoulou Ngoyo - 04 036 95 95 - infos@obts-congo.com</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// VRAIE CARTE POINTE-NOIRE
+var map = L.map('map').setView([-4.7692, 11.8664], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Points réels : Mpita et Ngoyo
+var mpita = [-4.797, 11.861];
+var ngoyo = [-4.73, 11.89];
+var motoIcon = L.divIcon({html: "🛵", className: "text-2xl", iconSize: [30,30]});
+
+L.marker(mpita).addTo(map).bindPopup("Mpita - Départ");
+L.marker(ngoyo).addTo(map).bindPopup("Ngoyo - Arrivée");
+L.polyline([mpita, ngoyo], {color: '#0A9BDF', weight: 5}).addTo(map);
+L.marker([-4.763, 11.875], {icon: motoIcon}).addTo(map).bindPopup("Livreur OBTS en route");
+
+function track(){
+  let code = document.getElementById('trackInput').value;
+  document.getElementById('codeDisplay').innerText = "#"+code;
+  document.getElementById('statusBadge').innerText = "Colis trouvé - En route";
+  alert("Colis "+code+" : En cours d'acheminement vers Ngoyo");
+}
+</script>
 </body>
-</html>
+  </html>
